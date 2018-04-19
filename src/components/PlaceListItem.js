@@ -7,10 +7,13 @@ class PlaceListItem extends Component {
     const {heroImage, slug, title} = this.props.datas.node
 
     return (
-      <div>
-        <h1>{title}</h1>
-        <Link to={slug}>{title}</Link>
-        <img src={heroImage.resize.src} alt=""/>
+      <div className="placelistitem">
+        <h1 className="placelistitem-title">{title}</h1>
+        <Link className="placelistitem-link" to={slug}>{title}</Link>
+
+        <figure>
+          <img className="placelistitem-img" src={heroImage.file.url} alt=""/>
+        </figure>
       </div>
     )
   }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import Link from 'gatsby-link'
-import PlaceListItem from '../containers/PlaceListItem/PlaceListItem'
+import PlaceListItem from '../components/PlaceListItem'
 
 const SLIDING_INTERVAL = 1000
 const WHEEL_SENSIBILITY = 100
@@ -74,17 +73,17 @@ class IndexPage extends Component {
 export const allPlaces = graphql`
     query allPlaces {
         allContentfulPlace {
-            edges {
-                  node {
-                        title,
-                        slug,
-                        heroImage {
-          resize(width: 1200, height: 125) {
-            src
-          }
-        }
-                  }
+          edges {
+            node {
+              title,
+              slug,
+              heroImage {
+                file {
+                  url
+                }
+              }
             }
+          }
         }
     }
 `

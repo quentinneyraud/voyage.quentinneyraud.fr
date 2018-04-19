@@ -3,6 +3,7 @@ module.exports = {
     title: 'Mon voyage',
   },
   plugins: [
+      'gatsby-plugin-sass',
       'gatsby-plugin-react-helmet',
       {
           resolve: `gatsby-source-contentful`,
