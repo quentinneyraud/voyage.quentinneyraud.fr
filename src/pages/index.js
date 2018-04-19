@@ -18,10 +18,15 @@ class IndexPage extends Component {
   }
 
   componentDidMount () {
+    document.getElementsByTagName('html')[0].classList.add('overflowHidden')
     this.index = 0
     this.maxPlaceIndex = this.props.data.allContentfulPlace.edges.length - 1
 
     this.addWheelEventListener()
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('html')[0].classList.remove('overflowHidden')
   }
 
   addWheelEventListener () {
@@ -63,7 +68,7 @@ class IndexPage extends Component {
 
   render () {
     return (
-      <main>
+      <main className="page-index">
         <PlaceListItem datas={this.props.data.allContentfulPlace.edges[this.state.currentPlaceIndex]}/>
       </main>
     )
@@ -72,14 +77,17 @@ class IndexPage extends Component {
 
 export const allPlaces = graphql`
     query allPlaces {
-        allContentfulPlace {
+        allContentfulPlace (sort: {
+          fields: [start],
+          order: DESC
+        }) {
           edges {
             node {
               title,
               slug,
               heroImage {
-                file {
-                  url
+                resolutions (width: 800, height: 500, quality: 100) {
+                  src
                 }
               }
             }

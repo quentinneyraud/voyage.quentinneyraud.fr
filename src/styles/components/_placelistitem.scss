@@ -1,17 +1,37 @@
 .placelistitem {
+  position: relative;
   width: 80vw;
   height: 80vh;
-  border: 1px solid #000;
+  // overflow: hidden;
 
   &-title {
     font-family: Atlantis, sans-serif;
+    color: #FFFFFF;
+    font-size: 144px;
+
+    text-shadow: 1px 1px 1px #777;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
   }
 
-  &-image {
+  &-canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
+    max-width: 90vw;
   }
 
   &-link {
 
+  }
+
+  &-path {
+    display: none;
   }
 }

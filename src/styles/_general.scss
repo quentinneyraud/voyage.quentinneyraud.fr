@@ -1,8 +1,8 @@
-html, body {
-  overflow: hidden;
-}
-
 @font-face {
   font-family: Atlantis;
   src: url(../fonts/Atlantis.ttf);
+}
+
+html.overflowHidden {
+  overflow: hidden;
 }
