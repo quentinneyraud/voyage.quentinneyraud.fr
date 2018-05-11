@@ -68,7 +68,7 @@ class Place extends Component {
 
     let medias = []
 
-    if (gallery.length === 0) {
+    if (!gallery || gallery.length === 0) {
       medias = (<h1>pas de gallerie</h1>)
     } else {
       medias = gallery.map((galleryItem, key) => {

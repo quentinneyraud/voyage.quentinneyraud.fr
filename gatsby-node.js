@@ -1,6 +1,15 @@
 const path = require(`path`)
 const slash = require(`slash`)
 
+exports.modifyWebpackConfig = ({config, stage}) => {
+  if (stage === "build-html") {
+    config.loader("null", {
+      test: /(mapbox-gl)\.js$/,
+      loader: "null-loader",
+    });
+  }
+};
+
 exports.createPages = ({graphql, boundActionCreators}) => {
   const {createPage} = boundActionCreators
   return new Promise((resolve, reject) => {
