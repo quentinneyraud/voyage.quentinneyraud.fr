@@ -12,6 +12,9 @@ WORKDIR /home/tmp
 COPY package.json /home/tmp
 RUN npm install
 
+# Change CACHE_DATE each build to rerun npm run build
+ARG CACHE_DATE=not_a_date
+
 COPY . /home/tmp
 RUN npm run build
 
