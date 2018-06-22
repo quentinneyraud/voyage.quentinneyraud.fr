@@ -21,6 +21,9 @@ class Place extends Component {
   }
 
   componentDidMount () {
+    try {
+      require('gsap/umd/TweenMax')
+    }
     // const medias = Array.from(document.querySelectorAll('.media-container'))
     //
     // medias.forEach((media) => {
