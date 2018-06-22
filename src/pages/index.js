@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 import brush from '../img/brush.png'
 import { navigateTo } from 'gatsby-link'
 import PropTypes from 'prop-types'
-import TweenMax from "gsap/umd/TweenMax"
-import SplitTextButton from '../classes/SplitTextButton'
-import DraggableSkew from '../classes/DraggableSkew'
 import ImageBrushEffect from '../classes/ImageBrushEffect'
 import { connect } from 'react-redux'
 import { updateCurrentPlaceIndex } from '../redux/actions/placeNavigationActions'
@@ -44,6 +41,14 @@ class IndexPage extends Component {
   }
 
   componentDidMount () {
+    try {
+      let SplitTextButton = require('../classes/SplitTextButton')
+      let TweenMax = require("gsap/umd/TweenMax")
+      let DraggableSkew = require('../classes/DraggableSkew')
+    } catch (e) {
+      console.log(e)
+    }
+
     this.loadedImages = 0
     // Load images
     const loadImg = (...paths) => {
