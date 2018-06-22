@@ -41,10 +41,13 @@ class IndexPage extends Component {
   }
 
   componentDidMount () {
+    let SplitTextButton
+    let TweenMax
+    let DraggableSkew
     try {
-      let SplitTextButton = require('../classes/SplitTextButton')
-      let TweenMax = require("gsap/umd/TweenMax")
-      let DraggableSkew = require('../classes/DraggableSkew')
+      SplitTextButton = require('../classes/SplitTextButton')
+      TweenMax = require("gsap/umd/TweenMax")
+      DraggableSkew = require('../classes/DraggableSkew')
     } catch (e) {
       console.log(e)
     }
