@@ -1,4 +1,3 @@
-import 'gsap'
 import '../lib/MorphSVGPlugin.min'
 
 class Canvas {
@@ -11,22 +10,10 @@ class Canvas {
     this.canvas.width = width
     this.canvas.height = height
   }
-
-  appendTo (domElement) {
-    domElement.appendChild(this.canvas)
-  }
-}
-
-const imageLoadToPromise = (image) => {
-  return new Promise((resolve) => {
-    image.onload = () => {
-      resolve()
-    }
-  })
 }
 
 export default class ImageBrushEffect {
-  constructor (canvas, imageUrl, svgPaths, brushUrl) {
+  constructor (canvas, svgPaths) {
     this.animations = []
     this.svgPaths = document.getElementById(svgPaths).getElementsByTagName('path')
 
@@ -37,35 +24,41 @@ export default class ImageBrushEffect {
     // rendering Canvas
     this.renderingCanvas = new Canvas(canvas)
 
-    // load image
     this.image = new Image()
-
-    // load brush
     this.brush = new Image()
+  }
 
-    Promise.all([imageLoadToPromise(this.image), imageLoadToPromise(this.brush)])
-      .then(this.onImageLoad.bind(this))
+  setBrush (brushSrc) {
+    this.brush.src = brushSrc
 
-    this.image.src = imageUrl
-    this.brush.src = brushUrl
+    return new Promise(resolve => {
+      this.brush.onload = resolve
+    })
+      .then(() => {
+        this.clippingCanvas.setSize(this.svgViewBox.width * 2 + this.brush.width, this.svgViewBox.height * 2 + this.brush.height)
+      })
   }
 
   setImage (imageSrc) {
-    this.image = new Image()
     this.image.src = imageSrc
-    imageLoadToPromise(this.image).then(this.onImageLoad.bind(this))
+
+    return new Promise(resolve => {
+      this.image.onload = resolve
+    })
+      .then(() => {
+        this.clippingCanvas.setSize(this.clippingCanvas.canvas.width, this.clippingCanvas.canvas.height)
+        this.renderingCanvas.setSize(this.image.width, this.image.height)
+      })
   }
 
-  hideCanvas () {
+  hide () {
     this.animations.forEach(a => a.kill())
     const { context: ctx, canvas } = this.renderingCanvas
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }
 
-  onImageLoad () {
-    this.clippingCanvas.setSize(this.svgViewBox.width * 2 + this.brush.width, this.svgViewBox.height * 2 + this.brush.height)
-    this.renderingCanvas.setSize(this.image.width, this.image.height)
-
+  show () {
+    this.hide()
     Array.from(this.svgPaths).forEach(path => this.animateBrushAlongPath(path))
   }
 

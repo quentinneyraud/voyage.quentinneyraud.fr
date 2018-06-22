@@ -1,129 +1,173 @@
 import React, { Component } from 'react'
 import brush from '../img/brush.png'
-import Link from 'gatsby-link'
+import { navigateTo } from 'gatsby-link'
 import PropTypes from 'prop-types'
+import TweenMax from "gsap/umd/TweenMax"
+import SplitTextButton from '../classes/SplitTextButton'
+import DraggableSkew from '../classes/DraggableSkew'
 import ImageBrushEffect from '../classes/ImageBrushEffect'
 import { connect } from 'react-redux'
 import { updateCurrentPlaceIndex } from '../redux/actions/placeNavigationActions'
 
-const SLIDING_INTERVAL = 1000
-const WHEEL_SENSIBILITY = 100
+const SKEW_FORCE = 0.5
+const MAX_SKEW_VALUE = 75
 
 class IndexPage extends Component {
-  constructor (props) {
-    super(props)
+  loadImage (path) {
+    return new Promise(resolve => {
+      const img = new Image()
+      img.onload = () => resolve(path)
+      img.src = path
+    })
+      .then(this.onImageLoaded.bind(this))
+  }
 
-    this.onWheel = this.onWheel.bind(this)
-    this.onKeyDown = this.onKeyDown.bind(this)
-    this.addWheelEventListener = this.addWheelEventListener.bind(this)
-    this.removeWheelEventListener = this.removeWheelEventListener.bind(this)
+  onImageLoaded () {
+    this.loadedImages++
+    TweenMax.to('#middle-line', 0.3, {
+      scaleX: this.loadedImages / this.totalImages
+    })
+  }
+
+  onAllImageLoaded () {
+    TweenMax.to('.list-item-title', 0.5, {
+      autoAlpha: 1
+    })
+
+    this.splitTextButton.show()
+
+    this.splitTextButton.setLink(this.slugs[0])
+    Promise.all([this.imageBrushEffect.setImage(this.paths[0]), this.imageBrushEffect.setBrush(brush)])
+      .then(() => {
+        this.imageBrushEffect.show()
+      })
   }
 
   componentDidMount () {
-    // Prevent scroll bounce
-    document.getElementsByTagName('html')[0].classList.add('overflowHidden')
+    this.loadedImages = 0
+    // Load images
+    const loadImg = (...paths) => {
+      this.totalImages = paths.length
+      return Promise.all(paths.map(this.loadImage.bind(this)))
+    }
+    this.paths = this.props.data.allContentfulPlace.edges.map(edge => {
+      return edge.node.heroImage.resolutions.src
+    }).concat(brush)
+    loadImg(...this.paths)
+      .then(this.onAllImageLoaded.bind(this))
+
+    // get infos
+    this.slugs = this.props.data.allContentfulPlace.edges.map(edge => {
+      return edge.node.slug
+    })
+
+    // SplitText
+    this.splitTextButton = new SplitTextButton('#link')
 
     // Initialize brush effect
     const canvas = document.getElementsByClassName('brush-effect')[0]
-    this.imageBrushEffect = new ImageBrushEffect(canvas, canvas.dataset.image, canvas.dataset.pathid, canvas.dataset.brush)
+    this.imageBrushEffect = new ImageBrushEffect(canvas, canvas.dataset.pathid)
 
-    this.maxPlaceIndex = this.props.data.allContentfulPlace.edges.length - 1
+    const elements = Array.from(document.querySelectorAll('#list li'))
+    elements[0].classList.add('active')
 
-    this.addPlaceNavigationEventListeners()
+    // Prevent scroll bounce
+    document.getElementsByTagName('html')[0].classList.add('overflowHidden')
+
+    this.draggable = new DraggableSkew(document.getElementById('list'), {
+      moveOnWheel: true,
+      moveOnClick: true,
+      moveOnKey: true,
+      resizeListener: true
+    }, {})
+
+    const tt = (index) => {
+      elements.forEach(el => el.classList.remove('active'))
+      elements.slice(0, index + 1).forEach(el => el.classList.add('active'))
+    }
+
+    this.draggable.on('newIndex', (datas) => {
+      this.splitTextButton.show()
+      this.splitTextButton.setLink(this.slugs[datas.newIndex])
+      this.imageBrushEffect.setImage(this.paths[datas.newIndex])
+        .then(this.imageBrushEffect.show.bind(this.imageBrushEffect))
+      this.skewElements(0, 0.3)
+
+      elements.forEach(el => el.classList.remove('active'))
+      elements.slice(0, datas.newIndex + 1).forEach(el => el.classList.add('active'))
+    })
+    this.draggable.on('onDrag', (e) => {
+      this.splitTextButton.hide()
+      this.imageBrushEffect.hide()
+      if (this.draggable.draggableInstance.x === this.draggable.draggableInstance.minX || this.draggable.draggableInstance.x === this.draggable.draggableInstance.maxX) {
+        // Fix bug on bounds, e.movementX is the last known value, but not 0
+        this.skewElements(0, 0.3)
+      } else {
+        this.skewElements(e.movementX * -1 * SKEW_FORCE, 0.1)
+      }
+    })
+    this.draggable.on('onDragEnd', () => {
+      this.skewElements(0, 0.3)
+    })
+    this.draggable.on('startGoTo', (datas) => {
+      this.imageBrushEffect.hide()
+      this.splitTextButton.hide()
+      tt(datas.newIndex)
+      if (datas.newIndex > datas.oldIndex) {
+        this.skewElements(15, 0.3)
+      } else {
+        this.skewElements(-15, 0.3)
+      }
+    })
+  }
+
+  skewElements (skewValue, duration) {
+    if (Math.abs(skewValue) > MAX_SKEW_VALUE) {
+      skewValue = Math.sign(skewValue) * MAX_SKEW_VALUE
+    }
+
+    TweenMax.to(this.draggable.elements, duration, {
+      skewX: skewValue,
+      skewType: 'simple'
+    })
   }
 
   componentWillReceiveProps (newProps) {
     if (newProps.currentPlaceIndex !== this.props.currentPlaceIndex) {
-      const { heroImage } = this.props.data.allContentfulPlace.edges[newProps.currentPlaceIndex].node
-      this.imageBrushEffect.hideCanvas()
-      this.imageBrushEffect.setImage(heroImage.resolutions.src)
+      this.draggable.goToIndex(newProps.currentPlaceIndex)
+      this.imageBrushEffect.setImage(this.paths[newProps.currentPlaceIndex])
     }
   }
 
   componentWillUnmount () {
     document.getElementsByTagName('html')[0].classList.remove('overflowHidden')
-    this.removePlaceNavigationEventListeners()
   }
 
   render () {
-    const {heroImage, slug, title} = this.props.data.allContentfulPlace.edges[this.props.currentPlaceIndex].node
+    const items = this.props.data.allContentfulPlace.edges.map(edge => (
+      <li key={edge.node.id} className="list-item">
+        <span className="list-item-title">{edge.node.title}</span>
+      </li>
+    ))
 
     return (
       <main className="page-index">
-        <div className="placelistitem">
-          <svg viewBox="0 0 1238 820" className="placelistitem-path" id="path">
-            <path d="M0.615281874,322.52692 L873.384491,818.421028" id="test"/>
-            <path d="M65.8671663,0.0886253533 C65.8671663,0.0886253533 1112.16915,887.740561 1237.81911,804.59436" id="Path-2"/>
-            <path d="M736.971096,45.5048015 L1219.68768,323.313848" id="Path-3"/>
-          </svg>
-          <Link to={slug}>
-            <h1 className="placelistitem-title">{title}</h1>
-            <canvas className="brush-effect placelistitem-canvas" data-image={heroImage.resolutions.src} data-pathid="path" data-brush={brush}/>
-          </Link>
+        <svg viewBox="0 0 1238 820" className="placelistitem-path" id="path">
+          <path d="M0.615281874,322.52692 L873.384491,818.421028" id="test"/>
+          <path d="M65.8671663,0.0886253533 C65.8671663,0.0886253533 1112.16915,887.740561 1237.81911,804.59436"
+                id="Path-2"/>
+          <path d="M736.971096,45.5048015 L1219.68768,323.313848" id="Path-3"/>
+        </svg>
+        <canvas className="brush-effect placelistitem-canvas" data-pathid="path"/>
+        <div id="content">
+          <ul id="list">
+            {items}
+          </ul>
+          <a id='link'>Voir</a>
+          <div id="middle-line"/>
         </div>
       </main>
     )
-  }
-
-  addPlaceNavigationEventListeners () {
-    this.addWheelEventListener()
-    this.addKeyEventListener()
-  }
-
-  removePlaceNavigationEventListeners () {
-    this.removeWheelEventListener()
-    this.removeKeyEventListener()
-  }
-
-  addKeyEventListener () {
-    document.addEventListener('keydown', this.onKeyDown)
-  }
-
-  removeKeyEventListener () {
-    document.removeEventListener('keydown', this.onKeyDown)
-  }
-
-  addWheelEventListener () {
-    window.addEventListener('wheel', this.onWheel)
-  }
-
-  removeWheelEventListener () {
-    window.removeEventListener('wheel', this.onWheel)
-  }
-
-  onWheel (e) {
-    if (e.deltaY > WHEEL_SENSIBILITY)
-      this.goToNext()
-
-    if (e.deltaY < -WHEEL_SENSIBILITY)
-      this.goToPrevious()
-  }
-
-  onKeyDown (e) {
-    if (e.which === 38) {
-      this.goToPrevious()
-    } else if (e.which === 40) {
-      this.goToNext()
-    }
-  }
-
-  goToNext () {
-    if (this.props.currentPlaceIndex < this.maxPlaceIndex) {
-      this.goToIndex(this.props.currentPlaceIndex + 1)
-    }
-  }
-
-  goToPrevious () {
-    if (this.props.currentPlaceIndex > 0) {
-      this.goToIndex(this.props.currentPlaceIndex - 1)
-    }
-  }
-
-  goToIndex (index) {
-    this.props.updateCurrentPlaceIndex(index)
-
-    this.removeWheelEventListener()
-    window.setTimeout(this.addWheelEventListener, SLIDING_INTERVAL)
   }
 }
 
@@ -133,7 +177,7 @@ IndexPage.propTypes = {
   updateCurrentPlaceIndex: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = ({ currentPlaceIndex }) => {
+const mapStateToProps = ({currentPlaceIndex}) => {
   return {
     currentPlaceIndex
   }
@@ -148,13 +192,14 @@ const mapDispatchToProps = dispatch => {
 export const allPlaces = graphql`
     query allPlaces {
         allContentfulPlace (sort: {
-          fields: [start],
+          fields: [start]
           order: ASC
         }) {
           edges {
             node {
-              title,
-              slug,
+            id
+              title
+              slug
               heroImage {
                 resolutions (width: 800, height: 500, quality: 100) {
                   src

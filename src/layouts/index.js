@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
-import Panel from '../components/Panel'
+import Map from '../components/Map'
 import { TransitionGroup } from 'react-transition-group'
-import thx from '../classes/ThanksConsole'
+// import thx from '../classes/ThanksConsole'
 
 import '../styles/main.scss'
 
@@ -34,7 +34,12 @@ class Layout extends Component {
       }, {
         name: 'Redux',
         url: 'https://redux.js.org'
-      }]
+      }],
+      icons: [
+        {
+          name: 'backpacker by Gan Khoon Lay from the Noun Project'
+        }
+      ]
     })*/
   }
 
@@ -50,7 +55,7 @@ class Layout extends Component {
             {name: 'keywords', content: 'sample, something'},
           ]}
         />
-        <Panel places={data.allContentfulPlace.edges}/>
+        <Map places={data.allContentfulPlace.edges}/>
         <div id="menu-trigger"/>
         <TransitionGroup>
           {children()}

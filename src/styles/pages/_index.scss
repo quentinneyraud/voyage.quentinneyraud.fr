@@ -1,8 +1,130 @@
 .page-index {
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  #content {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  canvas {
+    width: 50vw;
+  }
+
+  .link {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-decoration: none;
+    color: black;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+  }
+
+  #list {
+    position: relative;
+    white-space: nowrap;
+    font-size: 0;
+    cursor: -webkit-grab !important;
+    height: 50vh;
+    left: 200px;
+    margin: 0;
+
+    &.grabbing {
+      cursor: -webkit-grabbing !important;
+
+      li span {
+        //transform: scale(1.2);
+      }
+    }
+  }
+
+  #middle-line {
+    position: fixed;
+    z-index: 1000;
+    width: 100vw;
+    height: 1px;
+    top: 50%;
+    left: 0;
+    background-color: #2D2D2D44;
+    transform-origin: 0 0;
+    transform: scaleX(0);
+  }
+
+  .list-item {
+    position: relative;
+    margin: 0;
+    width: 70vw;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+
+    &.active span {
+      &:after {
+        transform: scaleX(1);
+      }
+    }
+
+    .list-item-title {
+      display: inline-block;
+      color: #2D2D2D;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bold;
+      font-size: 70px;
+      line-height: 70px;
+      pointer-events: none;
+      transition: all 0.5s;
+
+      opacity: 0;
+      visibility: hidden;
+
+      transform: translateY(-21px);
+
+      &:after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: -20px;
+        left: 0;
+        bottom: 0;
+        right: -20px;
+        background-color: #fff;
+        transform-origin: 0 0;
+        transform: scaleX(0);
+        transition: all 1s;
+        transition-delay: 0.5s;
+      }
+    }
+  }
+
+  #link {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 25px;
+    color: black;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+
+    overflow: hidden;
+
+    div {
+      pointer-events: none;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      height: 30px;
+      width: 1px;
+      background-color: #2D2D2D55;
+    }
+  }
 }

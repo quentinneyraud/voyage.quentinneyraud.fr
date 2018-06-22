@@ -20,16 +20,6 @@ class Place extends Component {
     })
   }
 
-  componentWillEnter (cb) {
-    console.log('test')
-    cb()
-  }
-
-  componentWillLeave (cb) {
-    console.log('test2')
-    cb()
-  }
-
   componentDidMount () {
     // const medias = Array.from(document.querySelectorAll('.media-container'))
     //
@@ -50,7 +40,6 @@ class Place extends Component {
     })*/
     let sc = Scrollbar.init(document.querySelectorAll('.page-place')[0]);
     sc.addListener(this.onScroll)
-    //window.addEventListener('scroll', this.onScroll)
   }
 
   onScroll ({offset, limit}) {
@@ -85,7 +74,6 @@ class Place extends Component {
       })
     }
 
-
     return (
       <main className="page-place">
         <Helmet
@@ -100,9 +88,6 @@ class Place extends Component {
         <div className="grid">
           {medias}
         </div>
-        {/*{this.props.data.previous &&*/}
-          {/*<Link to={this.props.data.previous.slug}>{this.props.data.previous.title}</Link>*/}
-        {/*}*/}
         {this.props.data.next &&
           <Link id="next-link" to={this.props.data.next.slug}>{this.props.data.next.title}</Link>
         }

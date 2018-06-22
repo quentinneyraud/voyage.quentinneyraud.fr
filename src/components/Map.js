@@ -26,14 +26,14 @@ class Map extends Component {
   }
 
   componentDidUpdate () {
-    this.map.flyTo({
+    /*this.map.flyTo({
       center: [this.props.places[this.props.currentPlaceIndex].node.location.lon, this.props.places[this.props.currentPlaceIndex].node.location.lat],
       zoom: 10,
       bearing: 0,
       minZoom: 6,
       curve: 1,
       speed: 0.8
-    })
+    })*/
   }
 
   onMapClick () {
@@ -113,8 +113,9 @@ class Map extends Component {
 
   render () {
     return (
-      <div id="map">
-      </div>
+      <aside>
+        <div id="map"/>
+      </aside>
     )
   }
 }

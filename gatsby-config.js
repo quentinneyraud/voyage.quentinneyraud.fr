@@ -21,5 +21,23 @@ module.exports = {
         accessToken: `2e64abd1f7b49def67aff0ed9a90379469f87348a9538a7af43c04f6beb7024a`,
       },
     },
+    {
+      resolve: `gatsby-plugin-favicon`,
+      options: {
+        logo: "./src/icon.png",
+        injectHTML: true,
+        icons: {
+          android: true,
+          appleIcon: true,
+          appleStartup: true,
+          coast: false,
+          favicons: true,
+          firefox: true,
+          twitter: false,
+          yandex: false,
+          windows: false
+        }
+      }
+    }
   ],
 }

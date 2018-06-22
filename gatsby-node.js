@@ -2,12 +2,22 @@ const path = require(`path`)
 const slash = require(`slash`)
 
 exports.modifyWebpackConfig = ({config, stage}) => {
+  config.merge({
+    resolve: {
+      alias: {
+        'TweenLite': 'gsap/umd/TweenLite'
+      }
+    }
+  });
+
   if (stage === "build-html") {
     config.loader("null", {
       test: /(mapbox-gl)\.js$/,
       loader: "null-loader",
     });
   }
+
+  return config;
 };
 
 exports.createPages = ({graphql, boundActionCreators}) => {
