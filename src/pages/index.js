@@ -5,6 +5,11 @@ import PropTypes from 'prop-types'
 import ImageBrushEffect from '../classes/ImageBrushEffect'
 import { connect } from 'react-redux'
 import { updateCurrentPlaceIndex } from '../redux/actions/placeNavigationActions'
+if (typeof window !== `undefined`) {
+  let SplitTextButton = require('../classes/SplitTextButton')
+  let TweenMax = require("gsap/umd/TweenMax")
+  let DraggableSkew = require('../classes/DraggableSkew')
+}
 
 const SKEW_FORCE = 0.5
 const MAX_SKEW_VALUE = 75
@@ -41,17 +46,6 @@ class IndexPage extends Component {
   }
 
   componentDidMount () {
-    let SplitTextButton
-    let TweenMax
-    let DraggableSkew
-    try {
-      SplitTextButton = require('../classes/SplitTextButton')
-      TweenMax = require("gsap/umd/TweenMax")
-      DraggableSkew = require('../classes/DraggableSkew')
-    } catch (e) {
-      console.log(e)
-    }
-
     this.loadedImages = 0
     // Load images
     const loadImg = (...paths) => {
