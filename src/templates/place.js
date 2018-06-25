@@ -66,7 +66,7 @@ class Place extends Component {
       medias = gallery.map((galleryItem, key) => {
         return (galleryItem.file.contentType.split('/')[0] === 'image') ? (
           <div className="media-container" key={key}>
-            <div className="description">Une place à Berlin</div>
+            {/*<div className="description">Une place à Berlin</div>*/}
             <Img sizes={galleryItem.sizes} /*imgStyle={{objectFit:'contain', objectPosition:'0 0'}} style={{maxHeight:'90vh'}}*//>
           </div>
         ) : (
@@ -92,7 +92,7 @@ class Place extends Component {
           {medias}
         </div>
         {this.props.data.next &&
-          <Link id="next-link" to={this.props.data.next.slug}>{this.props.data.next.title}</Link>
+          <Link id="next-link" to={'/' + this.props.data.next.slug}>{this.props.data.next.title}</Link>
         }
         <div className="clear-area"/>
       </main>

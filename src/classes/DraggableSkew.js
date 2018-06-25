@@ -1,6 +1,10 @@
 import '../lib/ThrowPropsPlugin.min'
-import { TweenMax, Power1 } from "gsap/umd/TweenMax"
-import Draggable from "gsap/umd/Draggable"
+let TweenMax
+let Draggable
+if (typeof window !== `undefined`) {
+  TweenMax = require("gsap/umd/TweenMax")
+  Draggable = require("gsap/umd/Draggable")
+}
 
 const AVAILABLE_EVENTS = ['newIndex', 'liveIndex', 'currentElementClicked', 'onDrag', 'onDragEnd', 'onPress', 'onRelease', 'onThrowComplete', 'startGoTo']
 const DEFAULT_OPTIONS = {

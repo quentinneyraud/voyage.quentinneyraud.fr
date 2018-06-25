@@ -5,10 +5,13 @@ import PropTypes from 'prop-types'
 import ImageBrushEffect from '../classes/ImageBrushEffect'
 import { connect } from 'react-redux'
 import { updateCurrentPlaceIndex } from '../redux/actions/placeNavigationActions'
+let SplitTextButton
+let TweenMax
+let DraggableSkew
 if (typeof window !== `undefined`) {
-  let SplitTextButton = require('../classes/SplitTextButton')
-  let TweenMax = require("gsap/umd/TweenMax")
-  let DraggableSkew = require('../classes/DraggableSkew')
+  SplitTextButton = require('../classes/SplitTextButton')
+  TweenMax = require("gsap/umd/TweenMax")
+  DraggableSkew = require('../classes/DraggableSkew')
 }
 
 const SKEW_FORCE = 0.5
