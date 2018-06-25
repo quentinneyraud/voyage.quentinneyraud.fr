@@ -1,11 +1,25 @@
 @font-face {
-  font-family: Atlantis;
-  src: url(../fonts/Atlantis.ttf);
+  font-family: 'BigJohn';
+  src: url('../fonts/BigJohn.eot');
+  src: url('../fonts/BigJohn.woff2') format('woff2'),
+  url('../fonts/BigJohn.woff') format('woff'),
+  url('../fonts/BigJohn.ttf') format('truetype'),
+  url('../fonts/BigJohn.svg#BigJohn') format('svg'),
+  url('../fonts/BigJohn.eot?#iefix') format('embedded-opentype');
+  font-weight: bold;
+  font-style: normal;
 }
 
 @font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Black.ttf);
+  font-family: 'PlayfairDisplay';
+  src: url('../fonts/PlayfairDisplay-Regular.eot');
+  src: url('../fonts/PlayfairDisplay-Regular.woff2') format('woff2'),
+  url('../fonts/PlayfairDisplay-Regular.woff') format('woff'),
+  url('../fonts/PlayfairDisplay-Regular.ttf') format('truetype'),
+  url('../fonts/PlayfairDisplay-Regular.svg#PlayfairDisplay-Regular') format('svg'),
+  url('../fonts/PlayfairDisplay-Regular.eot?#iefix') format('embedded-opentype');
+  font-weight: 400;
+  font-style: normal;
 }
 
 html.overflowHidden {

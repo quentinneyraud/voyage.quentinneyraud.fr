@@ -154,7 +154,7 @@ class IndexPage extends Component {
   render () {
     const items = this.props.data.allContentfulPlace.edges.map(edge => (
       <li key={edge.node.id} className="list-item">
-        <span className="list-item-title">{edge.node.title}</span>
+        <span className="list-item-title">{edge.node.title.normalize('NFD').replace(/[\u0300-\u036f]/g, "")}</span>
       </li>
     ))
 
@@ -171,7 +171,8 @@ class IndexPage extends Component {
           <ul id="list">
             {items}
           </ul>
-          <a id='link'>Voir</a>
+          <a href="http://www.instagram.com/quentin_neyraud" target="blank" id="instagram">Instagram</a>
+          <a id='link'>Explorer</a>
           <div id="middle-line"/>
         </div>
       </main>

@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import Img from 'gatsby-image'
 import Link from 'gatsby-link'
-import Scrollbar from 'smooth-scrollbar';
+import Scrollbar from 'smooth-scrollbar'
+if (typeof window !== `undefined`) {
+  const module = require("gsap/umd/TweenMax");
+}
 
 class Place extends Component {
   constructor (props) {
@@ -21,9 +24,6 @@ class Place extends Component {
   }
 
   componentDidMount () {
-    try {
-      require('gsap/umd/TweenMax')
-    }
     // const medias = Array.from(document.querySelectorAll('.media-container'))
     //
     // medias.forEach((media) => {

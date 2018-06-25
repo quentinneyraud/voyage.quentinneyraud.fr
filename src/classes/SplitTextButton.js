@@ -36,7 +36,7 @@ export default class SplitTextButton {
    * Show button
    */
   show () {
-    TweenMax.staggerTo(this.chars, 0.3, {
+    TweenMax.staggerTo(this.chars, 0.15, {
       yPercent: 0
     }, 0.05)
   }
@@ -45,7 +45,7 @@ export default class SplitTextButton {
    * Hide button
    */
   hide () {
-    TweenMax.staggerTo(this.chars, 0.3, {
+    TweenMax.staggerTo(this.chars, 0.25, {
       yPercent: -100,
       onComplete: this.reset.bind(this)
     }, 0.05)
